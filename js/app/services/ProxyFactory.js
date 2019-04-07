@@ -2,9 +2,9 @@ class ProxyFactory {
 
     static create(objeto, props, acao){
 
-        return new Proxy(new ListaNegociacoes(), {
+        return new Proxy(objeto, {
             get(target, prop, receiver) {
-                if(props.includes(prop) && typeof(target[prop]) == typeof(Function)) {
+                if(props.includes(prop) &&  ProxyFactory._verificaSeEhFuncao(target[prop]) ) {
                     return function(){
                         Reflect.apply(target[prop], target, arguments);
                         return acao(target);
@@ -13,5 +13,9 @@ class ProxyFactory {
              return Reflect.get(target, prop, receiver);
             }
         });
+    }
+
+    static _verificaSeEhFuncao(func){
+        return typeof(func) == typeof(Function);
     }
 }
